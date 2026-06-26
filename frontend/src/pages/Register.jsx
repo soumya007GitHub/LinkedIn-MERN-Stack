@@ -11,10 +11,14 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
-  const {serverURL} = useContext(AuthDataContext);
+  const { serverURL } = useContext(AuthDataContext);
   const signUp = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
     try {
       const response = await axios.post(`${serverURL}/api/auth/register`, {
         firstName: fName,
@@ -23,10 +27,15 @@ const Register = () => {
         email: email,
         password: password
       }, { withCredentials: true });
-      console.log(response.data);
+      setFName('');
+      setLName('');
+      setUsername('');
+      setEmail('');
+      setPassword('');
     } catch (error) {
-      console.log(error);
+      setError(error.response?.data?.message);
     }
+    setLoading(false);
   }
   return (
     <div className='w-full h-full min-h-screen flex items-center flex-col px-5 md:px-10 py-5 gap-5 md:gap-1'>
@@ -44,6 +53,7 @@ const Register = () => {
               type="text"
               name="fName"
               id="fName"
+              value={fName}
               className='border w-full border-gray-500 bg-transparent rounded-md p-2 hover:border-gray-800 focus:border-gray-800 hover-within:border-2 focus-within:border-2 outline-none'
               autoComplete="one-time-code"
               required
@@ -57,6 +67,7 @@ const Register = () => {
               type="text"
               name="lName"
               id="lName"
+              value={lName}
               className='border w-full border-gray-500 bg-transparent rounded-md p-2 hover:border-gray-800 focus:border-gray-800 hover-within:border-2 focus-within:border-2 outline-none'
               autoComplete="one-time-code"
               required
@@ -70,6 +81,7 @@ const Register = () => {
               type="text"
               name="username"
               id="username"
+              value={username}
               className='border w-full border-gray-500 bg-transparent rounded-md p-2 hover:border-gray-800 focus:border-gray-800 hover-within:border-2 focus-within:border-2 outline-none'
               autoComplete="one-time-code"
               required
@@ -83,6 +95,7 @@ const Register = () => {
               type="email"
               name="email"
               id="email"
+              value={email}
               className='border w-full border-gray-500 bg-transparent rounded-md p-2 hover:border-gray-800 focus:border-gray-800 hover-within:border-2 focus-within:border-2 outline-none'
               autoComplete="one-time-code"
               required
@@ -97,6 +110,7 @@ const Register = () => {
                 type={showPassword ? "text" : "password"}
                 name="password"
                 id="password"
+                value={password}
                 className='w-full outline-none bg-transparent p-2'
                 autoComplete="new-password"
                 required
@@ -111,12 +125,14 @@ const Register = () => {
               </button>
             </div>
           </div>
-
+          {
+            error.length > 0 && <p className='text-center text-red-600'>{error}</p>
+          }
           <button
             type="submit"
             className='flex justify-center items-center text-center w-full bg-sky-600 hover:bg-sky-700 text-white mt-4 p-3 rounded-3xl font-medium transition-colors'
           >
-            Sign Up
+            {loading ? 'Loading...' : 'Sign Up'}
           </button>
           <p className='text-center'>Already have account? <span className='text-blue-500 hover:underline'
             onClick={() => navigate("/login")}

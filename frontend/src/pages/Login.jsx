@@ -8,20 +8,26 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const {serverURL} = useContext(AuthDataContext);
   const login = async (e)=>{
     e.preventDefault();
+    setLoading(true);
+    setError('');
     try{
       const response = await axios.post(`${serverURL}/api/auth/login`, {
         email,
         password
       });
       if(response){
-        console.log(response.data);
+        setEmail('');
+        setPassword('');
       }
     }catch(err){
-      console.log(err);
+      setError(err.response.data.message);
     }
+    setLoading(false);
   }
   const navigate = useNavigate();
   return (
@@ -40,6 +46,7 @@ const Login = () => {
               type="email" 
               name="email" 
               id="email" 
+              value={email}
               className='border w-full border-gray-500 bg-transparent rounded-md p-2 hover:border-gray-800 focus:border-gray-800 hover-within:border-2 focus-within:border-2 outline-none' 
               autoComplete="one-time-code"
               required 
@@ -54,6 +61,7 @@ const Login = () => {
                 type={showPassword ? "text" : "password"} 
                 name="password" 
                 id="password" 
+                value={password}
                 className='w-full outline-none bg-transparent p-2' 
                 autoComplete="new-password"
                 required 
@@ -68,12 +76,14 @@ const Login = () => {
               </button>
             </div>
           </div>
-
+          {
+            error.length > 0 && <p className='text-center text-red-600'>{error}</p>
+          }
           <button 
             type="submit"
             className='flex justify-center items-center text-center w-full bg-sky-600 hover:bg-sky-700 text-white mt-4 p-3 rounded-3xl font-medium transition-colors'
           >
-            Sign in
+            {loading? 'Loading...' : 'Sign in'}
           </button>
           <p className='text-center'>New to Linkedin? <span className='text-blue-500 hover:underline'
           onClick={()=>navigate("/register")}

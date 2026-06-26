@@ -21,8 +21,8 @@ const register = async (req, res) => {
         const newUser = new User({
             firstName,
             lastName,
-            userName,
-            email,
+            userName: userName.toLowerCase(),
+            email: email.toLowerCase(),
             password: hashedPwd
         });
         const response = await newUser.save();
@@ -44,7 +44,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email: email.toLowerCase() });
         if (!user) {
             return res.status(404).json({ message: "No account found for this mail id." });
         }
