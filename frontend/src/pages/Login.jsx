@@ -6,9 +6,9 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   return (
-    <div className='w-full h-full min-h-screen flex items-center flex-col px-5 md:px-10 py-5 gap-5'>
+    <div className='w-full h-full min-h-screen flex items-center flex-col px-5 md:px-10 py-5 gap-5 md:gap-1'>
       <div className='w-full'>
-        <img src="/logo.svg" alt="Linkedin Logo" className='w-1/6 md:w-1/12' />
+        <img src="/logo.svg" alt="Linkedin Logo" className='w-1/5 md:w-1/12' />
       </div>
       <div className='shadow-lg rounded md:rounded-lg w-[90%] md:w-1/2 lg:w-2/5 p-6 border border-gray-300 bg-white my-auto md:my-10'>
         <h2 className='text-2xl font-semibold mb-6'>Sign in</h2>
@@ -54,7 +54,7 @@ const Login = () => {
           >
             Sign in
           </button>
-          <p className='text-center'>New to Linkedin ? <span className='text-blue-500 hover:underline'
+          <p className='text-center'>New to Linkedin? <span className='text-blue-500 hover:underline'
           onClick={()=>navigate("/register")}
           >Join now</span></p>
         </form>
