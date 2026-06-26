@@ -5,7 +5,7 @@ import tokenGenerator from "../config/token.js";
 
 const register = async (req, res) => {
     try {
-        const { firstName, lastName, userName, email, password, gender, location } = req.body;
+        const { firstName, lastName, userName, email, password } = req.body;
         const userNameCheck = await User.findOne({ userName });
         if (userNameCheck) {
             return res.status(402).json({ message: "Username already exists, use some differrent username." });

@@ -46,13 +46,11 @@ const userSchema = new mongoose.Schema({
         }
     ],
     location : {
-        type: String,
-        required: true
+        type: String
     },
     gender: {
         type: String, 
-        enum: ['male', 'female', 'other'],
-        required: true
+        enum: ['male', 'female', 'other']
     },
     experience : [
         {
