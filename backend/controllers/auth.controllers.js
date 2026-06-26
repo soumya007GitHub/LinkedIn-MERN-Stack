@@ -43,4 +43,34 @@ const register = async (req, res) => {
     }
 }
 
-export { register };
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "No account found for this mail id." });
+        }
+        const passwordCheck = await bcrypt.compare(password, user.password);
+        if (passwordCheck) {
+            let token = tokenGenerator(user._id);
+            res.cookie('authToken', token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: process.env.NODE_ENVIRONMENT === "development" ? '' : 'strict',
+                maxAge: 7*60*60*24*1000
+            });
+            return res.status(201).json({ message: "Login Succesful" });
+        }else{
+            return res.status(400).json({message:"Password is wrong."});
+        }
+    } catch (e) {
+        return res.status(500).json({ message: `Failed to login ${e}` });
+    }
+}
+
+const logout = async(req, res)=>{
+    res.clearCookie("authToken");
+    return res.status(200).json({message: "Logged Out Succesfully"});
+}
+
+export { register, login, logout };
