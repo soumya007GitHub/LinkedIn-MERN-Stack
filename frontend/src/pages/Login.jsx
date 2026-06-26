@@ -1,9 +1,28 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { AuthDataContext } from '../context/authContext';
+import axios from "axios";
 
 const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const {serverURL} = useContext(AuthDataContext);
+  const login = async (e)=>{
+    e.preventDefault();
+    try{
+      const response = await axios.post(`${serverURL}/api/auth/login`, {
+        email,
+        password
+      });
+      if(response){
+        console.log(response.data);
+      }
+    }catch(err){
+      console.log(err);
+    }
+  }
   const navigate = useNavigate();
   return (
     <div className='w-full h-full min-h-screen flex items-center flex-col px-5 md:px-10 py-5 gap-5 md:gap-1'>
@@ -13,7 +32,7 @@ const Login = () => {
       <div className='shadow-lg rounded md:rounded-lg w-[90%] md:w-1/2 lg:w-2/5 p-6 border border-gray-300 bg-white my-auto md:my-10'>
         <h2 className='text-2xl font-semibold mb-6'>Sign in</h2>
         
-        <form method="post" action="" className='flex flex-col gap-4'>
+        <form method="post" action="" className='flex flex-col gap-4' onSubmit={login}>
           
           <div className='flex flex-col gap-1'>
             <label htmlFor='email' className='text-sm font-medium text-gray-700'>Email</label>
@@ -24,6 +43,7 @@ const Login = () => {
               className='border w-full border-gray-500 bg-transparent rounded-md p-2 hover:border-gray-800 focus:border-gray-800 hover-within:border-2 focus-within:border-2 outline-none' 
               autoComplete="one-time-code"
               required 
+              onChange={(e)=>setEmail(e.target.value)}
             />
           </div>
 
@@ -37,6 +57,7 @@ const Login = () => {
                 className='w-full outline-none bg-transparent p-2' 
                 autoComplete="new-password"
                 required 
+                onChange={(e)=>setPassword(e.target.value)}
               />
               <button 
                 type="button"

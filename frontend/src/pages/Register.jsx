@@ -12,8 +12,9 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const serverURL = useContext(AuthDataContext);
-  const signUp = async () => {
+  const {serverURL} = useContext(AuthDataContext);
+  const signUp = async (e) => {
+    e.preventDefault();
     try {
       const response = await axios.post(`${serverURL}/api/auth/register`, {
         firstName: fName,

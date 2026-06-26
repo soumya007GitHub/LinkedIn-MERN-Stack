@@ -8,14 +8,14 @@ const register = async (req, res) => {
         const { firstName, lastName, userName, email, password } = req.body;
         const userNameCheck = await User.findOne({ userName });
         if (userNameCheck) {
-            return res.status(402).json({ message: "Username already exists, use some differrent username." });
+            return res.status(409).json({ message: "Username already exists, use some differrent username." });
         }
         const emailCheck = await User.findOne({ email });
         if (emailCheck) {
-            return res.status(402).json({ message: "Email already exists, use some differrent email id." });
+            return res.status(409).json({ message: "Email already exists, use some differrent email id." });
         }
         if(password.length < 8){
-            return res.status(402).json({message: "Password must be 8 characters long."});
+            return res.status(400).json({message: "Password must be 8 characters long."});
         }
         const hashedPwd = await bcrypt.hash(password, 10);
         const newUser = new User({
@@ -23,9 +23,7 @@ const register = async (req, res) => {
             lastName,
             userName,
             email,
-            password: hashedPwd,
-            gender,
-            location
+            password: hashedPwd
         });
         const response = await newUser.save();
         if (response) {
