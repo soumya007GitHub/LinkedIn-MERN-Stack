@@ -1,0 +1,46 @@
+import mongoose from "mongoose";
+import User from "../models/user.model.js";
+import bcrypt from "bcryptjs";
+import tokenGenerator from "../config/token.js";
+
+const register = async (req, res) => {
+    try {
+        const { firstName, lastName, userName, email, password, gender, location } = req.body;
+        const userNameCheck = await User.findOne({ userName });
+        if (userNameCheck) {
+            return res.status(402).json({ message: "Username already exists, use some differrent username." });
+        }
+        const emailCheck = await User.findOne({ email });
+        if (emailCheck) {
+            return res.status(402).json({ message: "Email already exists, use some differrent email id." });
+        }
+        if(password.length < 8){
+            return res.status(402).json({message: "Password must be 8 characters long."});
+        }
+        const hashedPwd = await bcrypt.hash(password, 10);
+        const newUser = new User({
+            firstName,
+            lastName,
+            userName,
+            email,
+            password: hashedPwd,
+            gender,
+            location
+        });
+        const response = await newUser.save();
+        if (response) {
+            let token = tokenGenerator(newUser._id);
+            res.cookie('authToken', token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: process.env.NODE_ENVIRONMENT === "development" ? '' : 'strict',
+                maxAge: 7*60*60*24*1000
+            });
+            return res.status(201).json({ message: "Registration succesful" });
+        }
+    } catch (e) {
+        return res.status(500).json({ message: `Failed to register user ${e}` });
+    }
+}
+
+export { register };
