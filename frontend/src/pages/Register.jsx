@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import { AuthDataContext } from '../context/authContext';
+import { UserDataContext } from '../context/userContext';
 
 const Register = () => {
   const [fName, setFName] = useState('');
@@ -13,6 +14,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { user, setUser } = useContext(UserDataContext);
   const navigate = useNavigate();
   const { serverURL } = useContext(AuthDataContext);
   const signUp = async (e) => {
@@ -32,6 +34,8 @@ const Register = () => {
       setUsername('');
       setEmail('');
       setPassword('');
+      setUser(response.data);
+      navigate("/");
     } catch (error) {
       setError(error.response?.data?.message);
     }
