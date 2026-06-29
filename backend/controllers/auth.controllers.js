@@ -30,9 +30,9 @@ const register = async (req, res) => {
             let token = tokenGenerator(newUser._id);
             res.cookie('authToken', token, {
                 httpOnly: true,
-                secure: true,
-                sameSite: process.env.NODE_ENVIRONMENT === "development" ? '' : 'strict',
-                maxAge: 7 * 60 * 60 * 24 * 1000
+                secure: process.env.NODE_ENVIRONMENT === "production",
+                sameSite: process.env.NODE_ENVIRONMENT === "development" ? "lax" : "strict",
+                maxAge: 7 * 24 * 60 * 60 * 1000,
             });
             return res.status(201).json({ message: "Registration succesful" });
         }
